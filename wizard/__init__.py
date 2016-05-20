@@ -280,7 +280,10 @@ class Wizard(object):
         step = self.get_step_object_by_key(step)
         template = step.template()
         mimetype = getattr(step, 'mimetype', None)
-        return http.HttpResponse(template.render(RequestContext(request, data)), mimetype=mimetype)
+        try:
+            return http.HttpResponse(template.render(RequestContext(request, data)), content_type=mimetype)
+        except TypeError:
+            return http.HttpResponse(template.render(RequestContext(request, data)), mimetype=mimetype)
 
     def do_display(self, step):
         step_object = self.get_step_object_by_key(step)
